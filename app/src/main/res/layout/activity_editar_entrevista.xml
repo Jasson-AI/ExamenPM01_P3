@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Editar Entrevista"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="20dp" />
+
+            <ImageView
+                android:id="@+id/ivImagen"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerInside"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/image_bg" />
+
+            <EditText
+                android:id="@+id/etIdOrden"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="ID de Orden"
+                android:inputType="text"
+                android:layout_marginBottom="12dp"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_bg" />
+
+            <EditText
+                android:id="@+id/etDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:hint="Descripción de la Entrevista"
+                android:inputType="textMultiLine"
+                android:layout_marginBottom="12dp"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_bg" />
+
+            <EditText
+                android:id="@+id/etPeriodista"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Nombre del Periodista"
+                android:inputType="text"
+                android:layout_marginBottom="12dp"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_bg" />
+
+            <EditText
+                android:id="@+id/etFecha"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Fecha"
+                android:inputType="text"
+                android:focusable="false"
+                android:layout_marginBottom="12dp"
+                android:padding="12dp"
+                android:background="@drawable/edit_text_bg" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btnActualizar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Actualizar"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnEliminar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Eliminar"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="#FF6B6B" />
+
+        <Button
+            android:id="@+id/btnCancelar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Cancelar" />
+
+    </LinearLayout>
+
+</LinearLayout>

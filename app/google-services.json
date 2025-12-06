@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1368273574",
+    "project_id": "entrevistasuth",
+    "storage_bucket": "entrevistasuth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1368273574:android:b18c2c79da51881cd4fa67",
+        "android_client_info": {
+          "package_name": "com.example.examenpm01_p3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCklFa2NrU3qADKOdywBXKMANbF806StZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
