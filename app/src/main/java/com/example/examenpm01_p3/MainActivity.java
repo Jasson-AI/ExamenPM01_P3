@@ -1,7 +1,9 @@
 package com.example.examenpm01_p3;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -39,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference database;
     private StorageReference storage;
 
-    private static final int PICK_IMAGE = 1;
+    private static final int PICK_IMAGE_GALLERY = 1;
     private static final int PICK_AUDIO = 2;
+    private static final int TAKE_PHOTO = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +66,40 @@ public class MainActivity extends AppCompatActivity {
 
         fechaSeleccionada = Calendar.getInstance();
 
-        btnSeleccionarImagen.setOnClickListener(v -> seleccionarImagen());
+        btnSeleccionarImagen.setOnClickListener(v -> mostrarDialogoImagen());
         btnSeleccionarAudio.setOnClickListener(v -> seleccionarAudio());
         etFecha.setOnClickListener(v -> mostrarDatePicker());
         btnGuardar.setOnClickListener(v -> guardarEntrevista());
         btnVerLista.setOnClickListener(v -> irALista());
     }
 
-    private void seleccionarImagen() {
+    private void mostrarDialogoImagen() {
+        String[] opciones = {"Tomar foto", "Seleccionar de galería"};
+
+        new AlertDialog.Builder(this)
+                .setTitle("Imagen del entrevistado")
+                .setItems(opciones, (dialog, which) -> {
+                    if (which == 0) {
+                        tomarFoto();
+                    } else {
+                        seleccionarImagenGaleria();
+                    }
+                })
+                .show();
+    }
+
+    private void seleccionarImagenGaleria() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, PICK_IMAGE);
+        startActivityForResult(intent, PICK_IMAGE_GALLERY);
+    }
+
+    private void tomarFoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, TAKE_PHOTO);
+        } else {
+            Toast.makeText(this, "No hay cámara disponible", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void seleccionarAudio() {
@@ -127,18 +155,28 @@ public class MainActivity extends AppCompatActivity {
                     });
                 });
             });
-        }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Error al subir imagen", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e ->
+                Toast.makeText(MainActivity.this, "Error al subir imagen", Toast.LENGTH_SHORT).show()
+        );
     }
 
     private void guardarEnBaseDatos(String idOrden, String descripcion, String periodista,
                                     long fecha, String imagenUri, String audioUri) {
+
         String key = database.push().getKey();
         Entrevista entrevista = new Entrevista(idOrden, descripcion, periodista, fecha, imagenUri, audioUri);
+
+        if (key == null) {
+            Toast.makeText(this, "Error al generar clave", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         database.child(key).setValue(entrevista).addOnSuccessListener(aVoid -> {
             Toast.makeText(MainActivity.this, "Entrevista guardada", Toast.LENGTH_SHORT).show();
             limpiarFormulario();
-        }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e ->
+                Toast.makeText(MainActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show()
+        );
     }
 
     private void limpiarFormulario() {
@@ -158,10 +196,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == RESULT_OK && data != null) {
-            if (requestCode == PICK_IMAGE) {
+            if (requestCode == PICK_IMAGE_GALLERY) {
                 imagenUri = data.getData();
                 Glide.with(this).load(imagenUri).into(ivImagen);
+
+            } else if (requestCode == TAKE_PHOTO) {
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    if (imageBitmap != null) {
+                        ivImagen.setImageBitmap(imageBitmap);
+
+                        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                        String path = MediaStore.Images.Media.insertImage(
+                                getContentResolver(), imageBitmap, "FotoEntrevistado", null);
+                        imagenUri = Uri.parse(path);
+                    }
+                }
+
             } else if (requestCode == PICK_AUDIO) {
                 audioUri = data.getData();
                 Toast.makeText(this, "Audio seleccionado", Toast.LENGTH_SHORT).show();

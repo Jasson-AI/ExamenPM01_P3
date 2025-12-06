@@ -56,7 +56,7 @@ public class EntrevistaAdapter extends RecyclerView.Adapter<EntrevistaAdapter.Vi
         holder.itemView.setOnLongClickListener(v -> {
             Intent intent = new Intent(context, EditarEntrevistaActivity.class);
             intent.putExtra("entrevista", entrevista);
-            intent.putExtra("key", entrevista.getIdOrden());
+            intent.putExtra("key", entrevista.getKey());
             context.startActivity(intent);
             return true;
         });

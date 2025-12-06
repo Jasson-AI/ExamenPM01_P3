@@ -3,6 +3,8 @@ package com.example.examenpm01_p3;
 import java.io.Serializable;
 
 public class Entrevista implements Serializable {
+
+    private String key;
     private String idOrden;
     private String descripcion;
     private String periodista;
@@ -24,6 +26,8 @@ public class Entrevista implements Serializable {
         this.audioUri = audioUri;
     }
 
+    public String getKey() { return key; }
+    public void setKey(String key) { this.key = key; }
     public String getIdOrden() { return idOrden; }
     public void setIdOrden(String idOrden) { this.idOrden = idOrden; }
 

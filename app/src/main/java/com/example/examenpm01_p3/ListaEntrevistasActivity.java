@@ -49,7 +49,8 @@ public class ListaEntrevistasActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Entrevista entrevista = snapshot.getValue(Entrevista.class);
                     if (entrevista != null) {
-                        entrevista.setIdOrden(snapshot.getKey());
+                        //entrevista.setIdOrden(snapshot.getKey());
+                        entrevista.setKey(snapshot.getKey());
                         entrevistas.add(entrevista);
                     }
                 }
