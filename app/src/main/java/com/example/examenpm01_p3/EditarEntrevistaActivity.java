@@ -222,13 +222,24 @@ public class EditarEntrevistaActivity extends AppCompatActivity {
     }
 
     private void eliminarEntrevista() {
-        database.child(entrevistaKey).removeValue().addOnSuccessListener(aVoid -> {
-            Toast.makeText(EditarEntrevistaActivity.this, "Entrevista eliminada", Toast.LENGTH_SHORT).show();
-            finish();
-        }).addOnFailureListener(e ->
-                Toast.makeText(EditarEntrevistaActivity.this, "Error al eliminar", Toast.LENGTH_SHORT).show()
-        );
+        //Referencias de Storage a partir de las URLs
+        StorageReference imagenRef = FirebaseStorage.getInstance().getReferenceFromUrl(entrevista.getImagenUri());
+        StorageReference audioRef = FirebaseStorage.getInstance().getReferenceFromUrl(entrevista.getAudioUri());
+
+        //Borrar imagen
+        imagenRef.delete().addOnCompleteListener(task1 -> {
+            //Borrar audio
+            audioRef.delete().addOnCompleteListener(task2 -> {
+                //Borrar el registro en la base de datos
+                database.child(entrevistaKey).removeValue().addOnSuccessListener(aVoid -> {
+                    Toast.makeText(EditarEntrevistaActivity.this,
+                            "Entrevista eliminada", Toast.LENGTH_SHORT).show();
+                    finish();
+                }).addOnFailureListener(e -> Toast.makeText(EditarEntrevistaActivity.this, "Error al eliminar registro", Toast.LENGTH_SHORT).show());
+            });
+        });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
